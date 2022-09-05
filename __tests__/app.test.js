@@ -16,7 +16,6 @@ describe('GET /api/categories', () => {
         .get('/api/categories')
         .expect(200)
         .then( (response) => {
-            console.log(response.body)
             expect(typeof response.body).toBe('object')
             expect(Array.isArray(response.body.categories)).toBe(true)
             expect(response.body.categories.length > 0).toBe(true)
@@ -27,4 +26,13 @@ describe('GET /api/categories', () => {
             })
         })
     })
+    test('404: responds with page not found when wrong path given', () => {
+        return request(app)
+        .get('/api/absurd')
+        .expect(404)
+        .then((response) => {
+            expect(response.body).toEqual({msg:'page not found'})
+
+        })
+    } )
 })
