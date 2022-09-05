@@ -10,6 +10,18 @@ beforeEach( () => seed(testData));
 afterAll( ()=> db.end());
 
 
+describe('GET wrong requests', () => {
+    test('404: responds with page not found when wrong path given', () => {
+        return request(app)
+        .get('/api/absurd')
+        .expect(404)
+        .then((response) => {
+            expect(response.body).toEqual({msg:'page not found'})
+
+        })
+    } )
+})
+
 describe('GET /api/categories', () => { 
     test('200: responds with an array of categories', () => {
         return request(app)
@@ -26,13 +38,5 @@ describe('GET /api/categories', () => {
             })
         })
     })
-    test('404: responds with page not found when wrong path given', () => {
-        return request(app)
-        .get('/api/absurd')
-        .expect(404)
-        .then((response) => {
-            expect(response.body).toEqual({msg:'page not found'})
-
-        })
-    } )
+    
 })
