@@ -42,7 +42,7 @@ describe('GET /api/categories', () => {
 })
 
 describe('2. GET /api/reviews/:review_id', () => {
-    test.only('status:200, responds with a single review', () => {
+    test('status:200, responds with a single review', () => {
       const review_id = 2;
       return request(app)
         .get(`/api/reviews/${review_id}`)
@@ -60,7 +60,7 @@ describe('2. GET /api/reviews/:review_id', () => {
         });
     });
   
-    test.only('400: bad request if invalid id format', () => {
+    test('400: bad request if invalid id format', () => {
         const review_id = 'banana'
         return request(app)
         .get(`/api/reviews/${review_id}`)
@@ -69,7 +69,7 @@ describe('2. GET /api/reviews/:review_id', () => {
             expect(response.body).toEqual({msg: 'Bad request'})
         })
     })
-    test.only('404: id not found', () => {
+    test('404: id not found', () => {
         const review_id = 2000
         return request(app)
         .get(`/api/reviews/${review_id}`)
