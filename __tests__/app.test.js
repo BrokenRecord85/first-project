@@ -40,3 +40,43 @@ describe('GET /api/categories', () => {
     })
     
 })
+
+describe('2. GET /api/reviews/:review_id', () => {
+    test('status:200, responds with a single review', () => {
+      const review_id = 2;
+      return request(app)
+        .get(`/api/reviews/${review_id}`)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.review.review_id).toBe(review_id)
+          expect(body.review).toHaveProperty('title', expect.any(String))
+          expect(body.review).toHaveProperty('designer', expect.any(String))
+          expect(body.review).toHaveProperty('owner', expect.any(String))
+          expect(body.review).toHaveProperty('review_img_url', expect.any(String))
+          expect(body.review).toHaveProperty('review_body', expect.any(String))
+          expect(body.review).toHaveProperty('category', expect.any(String))
+          expect(body.review).toHaveProperty('created_at', expect.any(String))
+          expect(body.review).toHaveProperty('votes', expect.any(Number))
+        });
+    });
+  
+    test('400: bad request if invalid id format', () => {
+        const review_id = 'banana'
+        return request(app)
+        .get(`/api/reviews/${review_id}`)
+        .expect(400)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Bad request'})
+        })
+    })
+    test('404: id not found', () => {
+        const review_id = 2000
+        return request(app)
+        .get(`/api/reviews/${review_id}`)
+        .expect(404)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Review not found'})
+        })
+    })
+    
+})
