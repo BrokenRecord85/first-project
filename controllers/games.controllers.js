@@ -1,4 +1,4 @@
-const { provideCategories, provideReviewsById, selectUsers } = require("../models/games.models")
+const { provideCategories, provideReviewsById, selectUsers, updateReviewById } = require("../models/games.models")
 
 
 
@@ -24,4 +24,18 @@ exports.getUsers = (req, res, next) => {
     selectUsers().then((users) => {
         res.status(200).send({users})
     })
+}
+
+exports.patchReview = (req, res, next) => {
+
+    const newVotes = req.body.inc_votes
+    const review_id = req.params.reviewid
+
+    updateReviewById(review_id, newVotes).then((review) => {
+        if (review === undefined) {
+            res.status(404).send({msg: 'Review not found'})
+        }
+        res.status(200).send({review})
+    })
+    .catch(next)
 }

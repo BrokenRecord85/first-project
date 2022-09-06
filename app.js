@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
-const {getCategories, getReviewsById, getUsers} = require('./controllers/games.controllers')
+const {getCategories, getReviewsById, getUsers, patchReview} = require('./controllers/games.controllers')
 
+
+app.use(express.json())
 
 app.get('/api/categories', getCategories)
 
@@ -9,13 +11,15 @@ app.get('/api/reviews/:reviewid', getReviewsById)
 
 app.get('/api/users', getUsers)
 
+app.patch('/api/reviews/:reviewid', patchReview)
+
 app.all('/*', (req, res, next) => {
     res.status(404).send({msg: 'page not found'})
 })
 
 app.use((err, req, res, next) => {
     if(err.code === '22P02') {
-        res.status(400).send({msg: 'Bad request'})
+      res.status(400).send({msg: 'Bad request'})
     }
     if (err.status && err.msg) {    
       res.status(err.status).send({ msg: err.msg });
@@ -25,7 +29,7 @@ app.use((err, req, res, next) => {
 });
 
 
-
-
   
 module.exports = app;
+
+//'23502'

@@ -41,7 +41,7 @@ describe('GET /api/categories', () => {
     
 })
 
-describe('2. GET /api/reviews/:review_id', () => {
+describe('GET /api/reviews/:review_id', () => {
     test('status:200, responds with a single review', () => {
       const review_id = 2;
       return request(app)
@@ -100,3 +100,92 @@ describe('GET /api/users', () => {
     })
     
 })
+
+
+describe('PATCH /api/review/:reviewid', () => {
+    test('200: responds with the updated review', () => {
+      const newVotes = 5
+      const reviewChanges = {
+        inc_votes: newVotes
+        
+      }
+        
+      return request(app)
+        .patch('/api/reviews/3')
+        .send(reviewChanges)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.review.votes).toEqual(10)
+          expect(body.review.review_id).toEqual(3)
+          expect(body.review).toEqual(
+            expect.objectContaining({
+                review_id: 3,
+                title: 'Ultimate Werewolf',
+                designer: 'Akihisa Okui',
+                owner: 'bainesface',
+                review_img_url:
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                review_body: "We couldn't find the werewolf!",
+                category: 'social deduction',
+                votes: 10
+            })
+          )
+        });
+    });
+
+    test('400: bad request if invalid id format', () => {
+        const review_id = 'banana'
+        const newVotes = 5
+        const reviewChanges = {
+        inc_votes: newVotes
+        
+        }
+        return request(app)
+        .patch(`/api/reviews/${review_id}`)
+        .send(reviewChanges)
+        .expect(400)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Bad request'})
+        })
+    })
+    test('404: id not found', () => {
+        const review_id = 2000
+        const newVotes = 5
+        const reviewChanges = {
+        inc_votes: newVotes
+        
+        }
+        return request(app)
+        .patch(`/api/reviews/${review_id}`)
+        .send(reviewChanges)
+        .expect(404)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Review not found'})
+        })
+    })
+    test('400: returns bad request when body missing vote field', () => {
+        const reviewChanges = {
+            title: 'ME'
+        }
+        return request(app)
+        .patch('/api/reviews/3')
+        .send(reviewChanges)
+        .expect(400)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Bad Request'})
+        })
+    })
+    test('400: returns bad request when incorect data type given as votes value', () => {
+        const reviewChanges = {
+            inc_votes: 'banana'
+        }
+        return request(app)
+        .patch('/api/reviews/3')
+        .send(reviewChanges)
+        .expect(400)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Enter a number'})
+        })
+    })
+});
+
