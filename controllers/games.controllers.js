@@ -1,4 +1,4 @@
-const { provideCategories, provideReviewsById } = require("../models/games.models")
+const { provideCategories, provideReviewsById, selectUsers } = require("../models/games.models")
 
 
 
@@ -18,4 +18,10 @@ exports.getReviewsById = (req, res, next) => {
         res.status(200).send({review})
     })
     .catch(next)
+}
+
+exports.getUsers = (req, res, next) => {
+    selectUsers().then((users) => {
+        res.status(200).send({users})
+    })
 }
