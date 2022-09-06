@@ -163,7 +163,7 @@ describe('PATCH /api/review/:reviewid', () => {
             expect(response.body).toEqual({msg: 'Review not found'})
         })
     })
-    test('400: returns bad request when body missing vote field', () => {
+    test('400: returns bad request when body missing votes field', () => {
         const reviewChanges = {
             title: 'ME'
         }
@@ -175,7 +175,7 @@ describe('PATCH /api/review/:reviewid', () => {
             expect(response.body).toEqual({msg: 'Bad Request'})
         })
     })
-    test('400: returns bad request when incorect data type given as votes value', () => {
+    test('400: returns bad request when incorrect data type given as votes value', () => {
         const reviewChanges = {
             inc_votes: 'banana'
         }
