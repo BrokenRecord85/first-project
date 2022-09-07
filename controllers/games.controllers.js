@@ -1,4 +1,4 @@
-const { provideCategories, provideReviewsById, selectUsers, updateReviewById } = require("../models/games.models")
+const { provideCategories, provideReviewsById, selectUsers, updateReviewById} = require("../models/games.models")
 
 
 
@@ -38,4 +38,8 @@ exports.patchReview = (req, res, next) => {
         res.status(200).send({review})
     })
     .catch(next)
+}
+
+exports.getCommentCount = () => {
+    provideCommentCount()
 }

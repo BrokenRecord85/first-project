@@ -41,8 +41,8 @@ describe('GET /api/categories', () => {
     
 })
 
-describe('GET /api/reviews/:review_id', () => {
-    test('status:200, responds with a single review', () => {
+describe('GET /api/reviews/:review_id (comment_count)', () => {
+    test('200: responds with a single review', () => {
       const review_id = 2;
       return request(app)
         .get(`/api/reviews/${review_id}`)
@@ -59,6 +59,16 @@ describe('GET /api/reviews/:review_id', () => {
           expect(body.review).toHaveProperty('votes', expect.any(Number))
         });
     });
+
+    test('200: single review includes property comment_count', () => {
+        const review_id = 2
+        return request(app)
+        .get(`/api/reviews/${review_id}`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.review).toHaveProperty('comment_count', expect.any(String))
+        })
+    })
   
     test('400: bad request if invalid id format', () => {
         const review_id = 'banana'

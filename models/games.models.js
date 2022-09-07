@@ -9,7 +9,13 @@ exports.provideCategories = () => {
 }
 
 exports.provideReviewsById = (review_id) => {
-  return db.query('SELECT * FROM reviews WHERE review_id=$1', [review_id]).then((result) => {
+  return db.query(
+    `SELECT reviews.review_id, reviews.title, reviews.designer, reviews.owner, reviews.review_img_url, reviews.review_body, reviews.category, reviews.created_at, reviews.votes, 
+    COUNT(comments.review_id) AS comment_count
+    FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id 
+    WHERE reviews.review_id=$1
+    GROUP BY reviews.review_id;`, [review_id]).then((result) => {
+    console.log(result.rows[0])
     return result.rows[0]
   })
 
@@ -34,3 +40,5 @@ exports.updateReviewById = (review_id, votes) => {
       return result.rows[0]
   })
 };
+
+
