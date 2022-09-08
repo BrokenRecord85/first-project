@@ -1,4 +1,4 @@
-const { provideCategories, provideReviewsById, selectUsers, updateReviewById} = require("../models/games.models")
+const { provideCategories, provideReviewsById, selectUsers, updateReviewById, selectReviews} = require("../models/games.models")
 
 
 
@@ -16,6 +16,16 @@ exports.getReviewsById = (req, res, next) => {
             res.status(404).send({msg: 'Review not found'})
         }
         res.status(200).send({review})
+    })
+    .catch(next)
+}
+ 
+exports.getReviews = (req, res, next) => {
+    const {category} = req.query
+    console.log(req.query)
+    selectReviews(category).then((reviews) => {
+       
+        res.status(200).send({reviews})
     })
     .catch(next)
 }
@@ -40,6 +50,3 @@ exports.patchReview = (req, res, next) => {
     .catch(next)
 }
 
-exports.getCommentCount = () => {
-    provideCommentCount()
-}

@@ -4,6 +4,7 @@ const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data/index');
 const app = require('../app');
 const { response } = require('../app');
+const reviews = require('../db/data/test-data/reviews');
 
 
 beforeEach( () => seed(testData));
@@ -198,4 +199,73 @@ describe('PATCH /api/review/:reviewid', () => {
         })
     })
 });
+
+describe.only(' GET /api/reviews', () => {
+    test('200: responds with an array of reviews', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then( (response) => {
+            expect(typeof response.body).toBe('object')
+            expect(Array.isArray(response.body.reviews)).toBe(true)
+            expect(response.body.reviews.length > 0).toBe(true)
+            response.body.reviews.forEach((review) => {
+                expect(review).toHaveProperty('owner', expect.any(String))
+                expect(review).toHaveProperty('title', expect.any(String))
+                expect(review).toHaveProperty('review_id', expect.any(Number))
+                expect(review).toHaveProperty('category', expect.any(String))
+                expect(review).toHaveProperty('review_img_url', expect.any(String))
+                expect(review).toHaveProperty('created_at', expect.any(String))
+                expect(review).toHaveProperty('votes', expect.any(Number))
+                expect(review).toHaveProperty('designer', expect.any(String))
+                expect(review).toHaveProperty('comment_count')         
+            })
+        })
+    })
+    test('200: reviews are filtered by category query', () => {
+        return request(app)
+        .get('/api/reviews?category=dexterity')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.reviews.length > 0).toBe(true)
+            response.body.reviews.forEach((review) => {               
+                expect(review.category).toBe('dexterity')
+            })
+        })
+    })
+    test('200: reviews are ordered in descending order', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.reviews).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('200: category exists but no games found', () => {
+        return request(app)
+        .get("/api/reviews?category=children's+games")
+        .expect(200)
+        .then((response) => {
+            expect(response.body).toEqual({msg:'No games in this category'})
+        })
+    })
+    test('404: category not found', () => {
+        return request(app)
+        .get('/api/reviews?category=banana')
+        .expect(404)
+        .then((response) => {
+            expect(response.body).toEqual({msg:'Category not found'} )
+        })
+    })
+    test('400: returns enter category when empty string given', () => {
+        return request(app)
+        .get('/api/reviews?category=')
+        .expect(400)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Enter a category'})
+        })
+    })
+        
+})
+
 
