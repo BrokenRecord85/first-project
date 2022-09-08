@@ -4,7 +4,6 @@ const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data/index');
 const app = require('../app');
 const { response } = require('../app');
-const reviews = require('../db/data/test-data/reviews');
 
 
 beforeEach( () => seed(testData));
@@ -208,7 +207,7 @@ describe.only(' GET /api/reviews', () => {
         .then( (response) => {
             expect(typeof response.body).toBe('object')
             expect(Array.isArray(response.body.reviews)).toBe(true)
-            expect(response.body.reviews.length > 0).toBe(true)
+            expect(response.body.reviews.length).toEqual(13)
             response.body.reviews.forEach((review) => {
                 expect(review).toHaveProperty('owner', expect.any(String))
                 expect(review).toHaveProperty('title', expect.any(String))
@@ -227,7 +226,7 @@ describe.only(' GET /api/reviews', () => {
         .get('/api/reviews?category=dexterity')
         .expect(200)
         .then((response) => {
-            expect(response.body.reviews.length > 0).toBe(true)
+            expect(response.body.reviews.length).toEqual(1)
             response.body.reviews.forEach((review) => {               
                 expect(review.category).toBe('dexterity')
             })

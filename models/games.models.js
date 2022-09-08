@@ -43,7 +43,6 @@ exports.selectReviews = (category) => {
   const groupString = ` GROUP BY reviews.review_id`
 
   let orderString = ` ORDER BY created_at DESC`
-  console.log(typeof category, '<<<<<INPUT CAT<<<<<')
   if(category === undefined) {
     finalQueryString += ` ${queryString} ${groupString} ${orderString}`
     return db.query(finalQueryString).then((result) => {
@@ -68,7 +67,6 @@ exports.selectReviews = (category) => {
   return db.query(finalQueryString, queryValues)
   })
   .then((result) => {
-      console.log(result.rows, '<<<<<<<')
       if(result.rows.length === 0) {
         return Promise.reject({status:200, msg:'No games in this category'})
       }
@@ -102,15 +100,3 @@ exports.updateReviewById = (review_id, votes) => {
 
 
 
-  // let queryValues = []
-
-  // if (category) {
-
-  //   queryString += ` WHERE reviews.category = $1` += groupString
-  //   queryValues.push(category)
-  // }
-  // else { queryString += groupString}
-
-  // queryString += orderString
-  
-  //console.log(queryString)
