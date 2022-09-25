@@ -1,4 +1,12 @@
-const { provideCategories, provideReviewsById, selectUsers, updateReviewById, selectReviews} = require("../models/games.models")
+const { provideCategories,
+        provideReviewsById, 
+        selectUsers, 
+        updateReviewById, 
+        selectReviews, 
+        selectCommentsById,
+        createComment,
+        removeComment
+    } = require("../models/games.models")
 
 
 
@@ -21,8 +29,9 @@ exports.getReviewsById = (req, res, next) => {
 }
  
 exports.getReviews = (req, res, next) => {
-    const {category} = req.query
-    selectReviews(category).then((reviews) => {
+    const { sort_by, order, category } = req.query
+    console.log(category)
+    selectReviews(sort_by, order, category).then((reviews) => {
        
         res.status(200).send({reviews})
     })
@@ -45,6 +54,30 @@ exports.patchReview = (req, res, next) => {
             res.status(404).send({msg: 'Review not found'})
         }
         res.status(200).send({review})
+    })
+    .catch(next)
+}
+
+exports.getCommentsById = (req, res, next) => {
+    const review_id = req.params.reviewid
+    selectCommentsById(review_id).then((comments) => {
+        res.status(200).send({comments})
+    })
+    .catch(next)
+}
+
+exports.postComment = (req, res, next) => {
+    const newComment = req.body
+    createComment(newComment).then((comments) => {
+        res.status(201).send({comments})
+    })
+    .catch(next)
+}
+
+exports.deleteComment = (req, res, next) => {
+    const comment_id = req.params.comment_id
+    removeComment(comment_id).then(() => {
+      res.status(204).send();
     })
     .catch(next)
 }
