@@ -201,6 +201,25 @@ exports.removeComment = (comment_id) => {
   })
 }
 
+exports.fetchUsers = (username) => {
+
+  return db.query(`SELECT ARRAY_AGG(username) as usernames FROM users`)
+  
+  .then((result) => {
+    console.log(result.rows)
+    if (!result.rows[0].usernames.includes(username)) {
+      return Promise.reject({status:404, msg:'Bad request'})
+    }
+  })
+  .then(() => {
+    console.log(username)
+  return db.query(`SELECT * FROM users WHERE username=$1;`, [username])})
+  
+  .then((result) => {
+    return result.rows[0]
+  })
+}
+
 
 
 

@@ -5,7 +5,8 @@ const { provideCategories,
         selectReviews, 
         selectCommentsById,
         createComment,
-        removeComment
+        removeComment,
+        fetchUsers
     } = require("../models/games.models")
 
 
@@ -77,8 +78,19 @@ exports.postComment = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
     const comment_id = req.params.comment_id
     removeComment(comment_id).then(() => {
-      res.status(204).send();
+      res.status(204).send()
     })
     .catch(next)
 }
 
+exports.getUserById = (req, res, next) => {
+    const username = req.params.username
+    fetchUsers(username).then((users) => {
+        console.log(users)
+        if ( users !== undefined) {
+            res.status(400).send({msg: 'Bad request'})
+        }
+        res.status(200).send({users})
+    })
+    .catch(next)
+}

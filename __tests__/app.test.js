@@ -48,6 +48,7 @@ describe('GET /api/reviews/:review_id (comment_count)', () => {
         .get(`/api/reviews/${review_id}`)
         .expect(200)
         .then(({ body }) => {
+          console.log(body)
           expect(body.review.review_id).toBe(review_id)
           expect(body.review).toHaveProperty('title', expect.any(String))
           expect(body.review).toHaveProperty('designer', expect.any(String))
@@ -463,8 +464,8 @@ describe('POST /api/reviews/:review_id/comments', () => {
     })
 })
 
-describe("204: delete comment", () => {
-    test("204: no content", () => {
+describe('DELETE /api/comments/:comment_id', () => {
+    test("204: delete comment", () => {
         const comment_id = 2
         return request(app)
             .delete(`/api/comments/${comment_id}`)
@@ -493,3 +494,29 @@ describe("204: delete comment", () => {
         })
     })
 });
+
+describe('GET /api/users/:username', () => {
+    test('200: responds with a single user', () => {
+        const username = 'mallionaire'
+        return request(app)
+        .get(`/api/users/${username}`)
+        .expect(200)
+        .then( ({body}) => {
+           expect(typeof body.users).toBe('object')            
+           expect(body.users.username).toBe(username)
+           expect(body.users).toHaveProperty('username', expect.any(String))
+           expect(body.users).toHaveProperty('avatar_url', expect.any(String))
+           expect(body.users).toHaveProperty('name', expect.any(String))
+        
+        })
+    })
+    test.only('400: bad request if invalid username format', () => {
+        const username = 2
+        return request(app)
+        .get(`/api/users/${username}`)
+        .expect(400)
+        .then((response) => {
+            expect(response.body).toEqual({msg: 'Bad request'})
+        })
+    })
+})
